@@ -21,8 +21,8 @@ public class AmigoModel {
 
     private Date dataNascimento;
 
-    @ManyToMany
+    @ManyToOne
     @JoinColumn(name = "conta_id", nullable = false)
-    private List<AccountModel> conta;
+    private AccountModel conta;
 
 }

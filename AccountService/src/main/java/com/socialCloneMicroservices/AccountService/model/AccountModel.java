@@ -1,5 +1,6 @@
 package com.socialCloneMicroservices.AccountService.model;
 
+import com.socialCloneMicroservices.AccountService.Enums.TipoContaEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "cliente")
+@Table(name = "conta")
 public class AccountModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +35,17 @@ public class AccountModel {
 
     private String telefone;
 
+    private Date dataCadastro = new Date();
+
+    @Enumerated(EnumType.STRING)
+    private TipoContaEnum tipoConta;
+
     @ManyToMany
-    @JoinColumn(name = "amigo_id", nullable = false)
-    private List<AmigoModel> amigos;
+    @JoinTable(
+            name = "amigos",
+            joinColumns = @JoinColumn(name = "conta_id"),
+            inverseJoinColumns = @JoinColumn(name = "amigo_id")
+    )    private List<AmigoModel> amigos;
 
 }
 
