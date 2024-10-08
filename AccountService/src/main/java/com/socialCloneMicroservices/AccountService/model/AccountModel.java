@@ -18,8 +18,11 @@ public class AccountModel {
     @Column(name = "id")
     private long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false, unique = true)
+    private String usuario;
 
     @Column(nullable = false)
     private String senha;
@@ -30,7 +33,7 @@ public class AccountModel {
     @Column(nullable = false)
     private Date dataNascimento;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String cpf;
 
     private String telefone;
@@ -46,6 +49,10 @@ public class AccountModel {
             joinColumns = @JoinColumn(name = "conta_id"),
             inverseJoinColumns = @JoinColumn(name = "amigo_id")
     )    private List<AmigoModel> amigos;
+
+    @ElementCollection
+    @CollectionTable(name = "contasBloqueadas", joinColumns = @JoinColumn(name = "conta_id"))
+    private List<ContaBloqueadaModel> contasBloqueadas;
 
 }
 

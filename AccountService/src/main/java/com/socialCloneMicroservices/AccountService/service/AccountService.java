@@ -2,6 +2,7 @@ package com.socialCloneMicroservices.AccountService.service;
 
 import com.socialCloneMicroservices.AccountService.Enums.TipoContaEnum;
 import com.socialCloneMicroservices.AccountService.model.AccountModel;
+import com.socialCloneMicroservices.AccountService.model.ContaBloqueadaModel;
 import com.socialCloneMicroservices.AccountService.repository.AccountRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @NoArgsConstructor
@@ -44,4 +48,37 @@ public class AccountService {
 
         return false;
     }
+
+    public String bloquearConta(int idConta, String userBloquear){
+        try {
+            Optional<AccountModel> optionalConta = accountRepository.findById(idConta);
+            if (!optionalConta.isPresent()) {
+                return "Conta não encontrada!";
+            }
+            conta = optionalConta.get();
+
+            if(isContaBloqueada(conta, userBloquear)){
+                return "Conta ja bloqueada!";
+            }
+
+            List<ContaBloqueadaModel> listContasBloqueadas = conta.getContasBloqueadas();
+            ContaBloqueadaModel novaContaBloqueada = new ContaBloqueadaModel();
+            novaContaBloqueada.setUsuario(userBloquear);
+            novaContaBloqueada.setDataBloqueio(new Date());
+            listContasBloqueadas.add(novaContaBloqueada);
+
+            accountRepository.save(conta);
+            return "Conta bloqueada com sucesso!";
+        } catch (Exception e) {
+            return "Falha ao bloquear a conta";
+        }
+    }
+
+    public boolean isContaBloqueada(AccountModel conta, String userBloqeuar){
+        return conta.getContasBloqueadas().stream()
+                .anyMatch(contaBloqueada -> contaBloqueada.getUsuario().equals(userBloqeuar));
+
+    }
+
+
 }

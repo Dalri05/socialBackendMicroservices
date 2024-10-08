@@ -4,9 +4,7 @@ import com.socialCloneMicroservices.AccountService.model.AccountModel;
 import com.socialCloneMicroservices.AccountService.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AccountController {
@@ -21,6 +19,16 @@ public class AccountController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/conta/bloquearConta/{conta}/{userBloquear}")
+        public String bloquearConta(@PathVariable int idConta, @PathVariable String userBloquear){
+        try {
+            return service.bloquearConta(idConta, userBloquear);
+        } catch (Exception e){
+            e.printStackTrace();
+            return "Erro ao bloquear conta";
         }
     }
 
