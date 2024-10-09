@@ -25,7 +25,7 @@ public class AccountController {
         }
     }
 
-    @PutMapping("/conta/bloquearConta/{conta}/{userBloquear}")
+    @PutMapping("/conta/bloquearConta/{idConta}/{userBloquear}")
         public String bloquearConta(@PathVariable int idConta, @PathVariable String userBloquear){
         try {
             return service.bloquearConta(idConta, userBloquear);
