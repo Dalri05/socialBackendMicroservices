@@ -80,5 +80,7 @@ public class AccountService {
 
     }
 
-
+    public List<AccountModel> getTodasContas(){
+        return accountRepository.findAll();
+    }
 }
