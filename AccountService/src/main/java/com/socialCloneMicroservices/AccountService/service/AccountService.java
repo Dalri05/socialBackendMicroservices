@@ -52,13 +52,20 @@ public class AccountService {
     public String bloquearConta(int idConta, String userBloquear){
         try {
             Optional<AccountModel> optionalConta = accountRepository.findById(idConta);
+            Optional<AccountModel> optionalContaBloquear = Optional.ofNullable(accountRepository.findByUsuario(userBloquear));
+
             if (!optionalConta.isPresent()) {
                 return "Conta não encontrada!";
             }
             conta = optionalConta.get();
+            AccountModel contaBloquear = optionalContaBloquear.get();
 
             if(isContaBloqueada(conta, userBloquear)){
                 return "Conta ja bloqueada!";
+            }
+
+            if(idConta == contaBloquear.getId()){
+                return "Não é possivel bloquear sua conta!";
             }
 
             List<ContaBloqueadaModel> listContasBloqueadas = conta.getContasBloqueadas();
