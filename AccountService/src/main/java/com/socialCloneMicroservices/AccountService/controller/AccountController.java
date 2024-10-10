@@ -1,5 +1,6 @@
 package com.socialCloneMicroservices.AccountService.controller;
 
+import com.socialCloneMicroservices.AccountService.Enums.ResponseEnum;
 import com.socialCloneMicroservices.AccountService.model.AccountModel;
 import com.socialCloneMicroservices.AccountService.service.AccountService;
 import org.apache.coyote.Response;
@@ -47,6 +48,18 @@ public class AccountController {
             e.printStackTrace();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @DeleteMapping("/conta/deletarconta/{idconta}")
+    public ResponseEntity deletarConta(@PathVariable int idConta){
+        try{
+            ResponseEnum response = service.deletarConta(idConta);
+            if (response.getResponseCode() == 500) return ResponseEntity.ok().build();
+            return ResponseEntity.notFound().build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }

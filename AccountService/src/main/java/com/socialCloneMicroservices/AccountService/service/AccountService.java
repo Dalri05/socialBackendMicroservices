@@ -1,5 +1,6 @@
 package com.socialCloneMicroservices.AccountService.service;
 
+import com.socialCloneMicroservices.AccountService.Enums.ResponseEnum;
 import com.socialCloneMicroservices.AccountService.Enums.TipoContaEnum;
 import com.socialCloneMicroservices.AccountService.model.AccountModel;
 import com.socialCloneMicroservices.AccountService.model.ContaBloqueadaModel;
@@ -89,5 +90,19 @@ public class AccountService {
 
     public List<AccountModel> getTodasContas(){
         return accountRepository.findAll();
+    }
+
+    public ResponseEnum deletarConta(int idConta){
+        try {
+            List<AccountModel> listaContas = accountRepository.findAll();
+            if(!listaContas.isEmpty() && listaContas.stream().anyMatch(conta -> conta.getId() == idConta)){
+                accountRepository.deleteById(idConta);
+                return ResponseEnum.SUCESS;
+            }
+            return ResponseEnum.NOT_FOUND;
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEnum.BAD;
+        }
     }
 }
