@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Entity
@@ -53,6 +54,10 @@ public class AccountModel {
     @ElementCollection
     @CollectionTable(name = "contasBloqueadas", joinColumns = @JoinColumn(name = "conta_id"))
     private List<ContaBloqueadaModel> contasBloqueadas;
+
+    @ElementCollection
+    @CollectionTable(name = "solicitacoes")
+    private HashMap<Long, String> solicitacoesAmizade;
 
 }
 

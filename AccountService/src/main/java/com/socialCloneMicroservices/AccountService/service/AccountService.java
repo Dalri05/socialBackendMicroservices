@@ -105,4 +105,29 @@ public class AccountService {
             return ResponseEnum.BAD;
         }
     }
+
+    public ResponseEnum enviarSolicitacao(String user, int idContaEnviar){
+        try {
+            Optional<AccountModel> contaAddOpcional = accountRepository.findById(idContaEnviar);
+            Optional<AccountModel> contaPessoalOpcional = Optional.ofNullable(accountRepository.findByUsuario(user));
+
+            if (!contaAddOpcional.isPresent() || !contaPessoalOpcional.isPresent()) {
+                return ResponseEnum.NOT_FOUND;
+            }
+
+            AccountModel contaAdd = contaAddOpcional.get();
+            AccountModel contaPessoal = contaPessoalOpcional.get();
+
+            if (contaAdd.getId() == contaPessoal.getId()) return ResponseEnum.BAD;
+            if (!contaAdd.getSolicitacoesAmizade().isEmpty() && contaAdd.getSolicitacoesAmizade().containsValue(contaPessoal.getUsuario()))
+                return ResponseEnum.BAD;
+
+            contaAdd.getSolicitacoesAmizade().put(contaPessoal.getId(), contaPessoal.getUsuario());
+            accountRepository.save(contaAdd);
+            return ResponseEnum.SUCESS;
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEnum.BAD;
+        }
+    }
 }
