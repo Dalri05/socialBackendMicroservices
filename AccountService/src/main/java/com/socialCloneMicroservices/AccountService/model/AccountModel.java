@@ -55,9 +55,11 @@ public class AccountModel {
     @CollectionTable(name = "contasBloqueadas", joinColumns = @JoinColumn(name = "conta_id"))
     private List<ContaBloqueadaModel> contasBloqueadas;
 
-    @ElementCollection
-    @CollectionTable(name = "solicitacoes")
-    private HashMap<Long, String> solicitacoesAmizade;
+    @OneToMany(mappedBy = "solicitante")
+    private List<SolicitacoesAmizadeModel> solicitacoesEnviadas;
+
+    @OneToMany(mappedBy = "solicitado")
+    private List<SolicitacoesAmizadeModel> solicitacoesRecebidas;
 
 }
 

@@ -19,13 +19,18 @@ public class AmizadeController {
     @Autowired
     AccountService accountService;
 
-    @PutMapping("/conta/solicitacao/enviar/{user}/{idcontaenviar}")
-    public ResponseEntity enviarSolicitacao(@PathVariable String user,int idConta){
+    @PutMapping("/conta/solicitacao/enviar/{user}/{idConta}")
+    public ResponseEntity<?> enviarSolicitacao(@PathVariable String user, @PathVariable Long idConta) {
+        if (idConta == null) {
+            return ResponseEntity.badRequest().body("O ID da conta não pode ser nulo.");
+        }
+
         ResponseEnum response = accountService.enviarSolicitacao(user, idConta);
-        if (response.equals(ResponseEnum.SUCESS))
-            return ResponseEntity.ok().build();
 
-        return ResponseEntity.badRequest().build();
+        if (response == ResponseEnum.SUCESS) {
+            return ResponseEntity.ok("Solicitação de amizade enviada com sucesso!");
+        } else {
+            return ResponseEntity.badRequest().body("Erro ao enviar solicitação de amizade.");
+        }
     }
-
 }

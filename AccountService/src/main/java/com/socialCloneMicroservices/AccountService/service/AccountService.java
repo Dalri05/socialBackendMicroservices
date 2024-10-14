@@ -1,10 +1,13 @@
 package com.socialCloneMicroservices.AccountService.service;
 
 import com.socialCloneMicroservices.AccountService.Enums.ResponseEnum;
+import com.socialCloneMicroservices.AccountService.Enums.StatusSolicitacaoEnum;
 import com.socialCloneMicroservices.AccountService.Enums.TipoContaEnum;
 import com.socialCloneMicroservices.AccountService.model.AccountModel;
 import com.socialCloneMicroservices.AccountService.model.ContaBloqueadaModel;
+import com.socialCloneMicroservices.AccountService.model.SolicitacoesAmizadeModel;
 import com.socialCloneMicroservices.AccountService.repository.AccountRepository;
+import com.socialCloneMicroservices.AccountService.repository.SolicitacaoAmizadeRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,10 @@ public class AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private SolicitacaoAmizadeRepository solicitacaoAmizadeRepository;
+
     private AccountModel conta;
 
     public void salvarConta(AccountModel conta){
@@ -106,9 +113,9 @@ public class AccountService {
         }
     }
 
-    public ResponseEnum enviarSolicitacao(String user, int idContaEnviar){
+    public ResponseEnum enviarSolicitacao(String user, Long idContaSolicitada) {
         try {
-            Optional<AccountModel> contaAddOpcional = accountRepository.findById(idContaEnviar);
+            Optional<AccountModel> contaAddOpcional = accountRepository.findById(idContaSolicitada.intValue());
             Optional<AccountModel> contaPessoalOpcional = Optional.ofNullable(accountRepository.findByUsuario(user));
 
             if (!contaAddOpcional.isPresent() || !contaPessoalOpcional.isPresent()) {
@@ -118,16 +125,22 @@ public class AccountService {
             AccountModel contaAdd = contaAddOpcional.get();
             AccountModel contaPessoal = contaPessoalOpcional.get();
 
-            if (contaAdd.getId() == contaPessoal.getId()) return ResponseEnum.BAD;
-            if (!contaAdd.getSolicitacoesAmizade().isEmpty() && contaAdd.getSolicitacoesAmizade().containsValue(contaPessoal.getUsuario()))
+            if (contaAdd.getId() == contaPessoal.getId()) {
                 return ResponseEnum.BAD;
+            }
 
-            contaAdd.getSolicitacoesAmizade().put(contaPessoal.getId(), contaPessoal.getUsuario());
-            accountRepository.save(contaAdd);
+            SolicitacoesAmizadeModel solicitacao = new SolicitacoesAmizadeModel();
+            solicitacao.setSolicitante(contaPessoal);
+            solicitacao.setSolicitado(contaAdd);
+            solicitacao.setStatus(StatusSolicitacaoEnum.PENDENTE);
+            solicitacao.setDataSolicitacao(new Date());
+
+            solicitacaoAmizadeRepository.save(solicitacao);
             return ResponseEnum.SUCESS;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEnum.BAD;
         }
     }
+
 }
