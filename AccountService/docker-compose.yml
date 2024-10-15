@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: AccountService
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5433:5432"
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  accountservice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SPRING_APPLICATION_NAME: AccountService
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/AccountService
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 12345
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://host.docker.internal:8761/eureka/
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - redis
