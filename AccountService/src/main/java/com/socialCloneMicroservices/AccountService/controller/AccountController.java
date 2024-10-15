@@ -52,11 +52,11 @@ public class AccountController {
         return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping("/conta/deletarconta/{idconta}")
-    public ResponseEntity deletarConta(@PathVariable int idConta){
+    @DeleteMapping("/conta/deletarconta/{id}")
+    public ResponseEntity deletarConta(@PathVariable int id){
         try{
-            ResponseEnum response = service.deletarConta(idConta);
-            if (response.getResponseCode() == 500) return ResponseEntity.ok().build();
+            ResponseEnum response = service.deletarConta(id);
+            if (response.getResponseCode() == 200) return ResponseEntity.ok().build();
             return ResponseEntity.notFound().build();
         } catch (Exception e){
             e.printStackTrace();

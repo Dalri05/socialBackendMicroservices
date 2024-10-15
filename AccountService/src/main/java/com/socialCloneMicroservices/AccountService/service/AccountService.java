@@ -11,6 +11,7 @@ import com.socialCloneMicroservices.AccountService.repository.SolicitacaoAmizade
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,7 @@ public class AccountService {
 
     private AccountModel conta;
 
+    @CacheEvict(value = "allAccounts", allEntries = true)
     public void salvarConta(AccountModel conta){
         if (conta.getDataNascimento() == null) return;
 
@@ -96,11 +98,12 @@ public class AccountService {
 
     }
 
-    @Cacheable(value = "allAcounts")
+    @Cacheable(value = "allAccounts")
     public List<AccountModel> getTodasContas(){
         return accountRepository.findAll();
     }
 
+    @CacheEvict(value = "allAccounts", allEntries = true)
     public ResponseEnum deletarConta(int idConta){
         try {
             List<AccountModel> listaContas = accountRepository.findAll();
