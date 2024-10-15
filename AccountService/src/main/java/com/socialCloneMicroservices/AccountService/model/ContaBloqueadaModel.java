@@ -10,6 +10,7 @@ import java.util.Date;
 @Setter
 @Embeddable
 public class ContaBloqueadaModel {
+    private static final long serialVersionUID = 1L;
 
     private String usuario;
 

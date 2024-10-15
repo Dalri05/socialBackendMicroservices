@@ -96,6 +96,7 @@ public class AccountService {
 
     }
 
+    @Cacheable(value = "allAcounts")
     public List<AccountModel> getTodasContas(){
         return accountRepository.findAll();
     }
