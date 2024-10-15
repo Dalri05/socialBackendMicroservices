@@ -21,8 +21,6 @@ public class AmigoModel implements Serializable {
 
     private String nome;
 
-    private Date dataNascimento;
-
     @ManyToOne
     @JoinColumn(name = "conta_id", nullable = false)
     private AccountModel conta;
