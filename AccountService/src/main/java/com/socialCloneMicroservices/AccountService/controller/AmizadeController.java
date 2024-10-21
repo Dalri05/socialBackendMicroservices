@@ -48,4 +48,15 @@ public class AmizadeController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PutMapping("/conta/solicitacao/recusar/{idSolicitante}/{idSolicitado}")
+    public ResponseEntity<?> recusarSolicitacao(@PathVariable Integer idSolicitante, @PathVariable Integer idSolicitado) {
+        try{
+            String response = amizadeService.recusarSolicatacao(idSolicitante, idSolicitado);
+            return ResponseEntity.ok(response);
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

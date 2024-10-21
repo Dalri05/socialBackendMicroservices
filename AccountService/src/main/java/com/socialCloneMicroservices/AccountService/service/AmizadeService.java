@@ -1,6 +1,5 @@
 package com.socialCloneMicroservices.AccountService.service;
 
-import com.socialCloneMicroservices.AccountService.Enums.ResponseEnum;
 import com.socialCloneMicroservices.AccountService.Enums.StatusSolicitacaoEnum;
 import com.socialCloneMicroservices.AccountService.model.AccountModel;
 import com.socialCloneMicroservices.AccountService.model.AmigoModel;
@@ -66,6 +65,38 @@ public class AmizadeService {
         catch (Exception e){
             e.printStackTrace();
             return "Erro ao adicionar uma conta";
+        }
+    }
+
+    public String recusarSolicatacao (int idContaSolicitante, int idContaSolicitada){
+        try {
+            AccountModel contaSolicitante = accountRepository.findById(idContaSolicitante).get();
+            AccountModel contaSolicitada = accountRepository.findById(idContaSolicitada).get();
+
+            if (!contaSolicitante.getSolicitacoesEnviadas().stream()
+                    .anyMatch(solicitacao -> solicitacao.getSolicitado().getId() == idContaSolicitada)) {
+                return "Você não consegue recusar uma solicitação não enviada.";
+            }
+
+            boolean removida = contaSolicitada.getSolicitacoesRecebidas().removeIf(
+                    solicitacao -> solicitacao.getStatus() == StatusSolicitacaoEnum.PENDENTE
+                            && solicitacao.getSolicitante().getId() == idContaSolicitante
+            );
+            if (removida) {
+                contaSolicitante.getSolicitacoesEnviadas().removeIf(
+                        solicitacao -> solicitacao.getSolicitado().getId() == idContaSolicitada
+                );
+
+                accountRepository.save(contaSolicitada);
+                accountRepository.save(contaSolicitante);
+
+                return "Solicitação recusada com sucesso.";
+            }
+
+            return "Solicitação não encontrada ou já foi processada.";
+        } catch (Exception e){
+            e.printStackTrace();
+            return "Erro ao recusar solicitação";
         }
     }
 }
