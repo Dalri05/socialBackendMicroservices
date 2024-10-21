@@ -1,7 +1,7 @@
 ## TODO
 
-- [ ] Enable Docker in all services
+- [ ] Refractor ResponseEnum
 - [ ] Implement Email Service
 - [ ] Add Two Factor Authentication (2FA)
-- [ ] Implement Caching
+- [✔️] Implement Caching
 - [ ] Create Message Service with Kafka and WebSockets
